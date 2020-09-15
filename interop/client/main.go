@@ -86,7 +86,7 @@ func runTestcase(testcase string) error {
 	defer r.Close()
 
 	switch testcase {
-	case "handshake", "transfer", "retry", "ecn":
+	case "handshake", "transfer", "retry":
 	case "keyupdate":
 		handshake.KeyUpdateInterval = 100
 	case "chacha20":
