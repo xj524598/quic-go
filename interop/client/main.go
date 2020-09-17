@@ -2,10 +2,12 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -45,9 +47,20 @@ func main() {
 		defer keyLog.Close()
 	}
 
+	caRaw, err := ioutil.ReadFile("/certs/ca.pem")
+	if err != nil {
+		fmt.Printf("Couldn't read root CA: %s\n", err)
+		os.Exit(1)
+	}
+	ca := x509.NewCertPool()
+	if ok := ca.AppendCertsFromPEM(caRaw); !ok {
+		fmt.Println("Failed to add root CA.")
+		os.Exit(1)
+	}
+
 	tlsConf = &tls.Config{
-		InsecureSkipVerify: true,
-		KeyLogWriter:       keyLog,
+		RootCAs:      ca,
+		KeyLogWriter: keyLog,
 	}
 	testcase := os.Getenv("TESTCASE")
 	if err := runTestcase(testcase); err != nil {
