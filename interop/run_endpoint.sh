@@ -8,7 +8,7 @@ echo "Using commit:" `cat commit.txt`
 
 if [ "$ROLE" == "client" ]; then
     # Wait for the simulator to start up.
-    /wait-for-it.sh sim:57832 -s -t 30
+    /wait-for-it.sh sim:57832 -s -t 30 || sleep 10000
     echo "Starting QUIC client..."
     echo "Client params: $CLIENT_PARAMS"
     echo "Test case: $TESTCASE"
